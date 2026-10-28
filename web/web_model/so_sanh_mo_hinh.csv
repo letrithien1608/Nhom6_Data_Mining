@@ -1,0 +1,4 @@
+Mo hinh,Accuracy,Precision (macro),Recall (macro),F1 (macro),Acc thanh long,F1 thanh long,Acc TL sang,Acc TL toi,Acc PlantDoc,F1 PlantDoc,TL doan thanh PD,PD doan thanh TL
+Random Forest,0.4332,0.3416,0.3251,0.2943,0.5128,0.6082,0.588,0.4038,0.2533,0.2245,96,8
+CNN tu xay,0.5436,0.4572,0.4975,0.4327,0.5874,0.6427,0.6312,0.524,0.4444,0.386,41,2
+ResNet18,0.5817,0.4521,0.4981,0.4471,0.6424,0.7221,0.7409,0.5,0.4444,0.386,43,1

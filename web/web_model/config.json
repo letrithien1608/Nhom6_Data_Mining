@@ -1,0 +1,108 @@
+{
+  "model": "ResNet18",
+  "classes": [
+    "Dragon fruit healthy",
+    "Dragon fruit red fungus",
+    "Dragon fruit yellow spot",
+    "Dragon fruit coin spot",
+    "Dragon fruit streak spot",
+    "Dragon fruit stem rot",
+    "Apple Scab Leaf",
+    "Apple leaf",
+    "Apple rust leaf",
+    "Bell_pepper leaf",
+    "Bell_pepper leaf spot",
+    "Blueberry leaf",
+    "Cherry leaf",
+    "Corn Gray leaf spot",
+    "Corn leaf blight",
+    "Corn rust leaf",
+    "Peach leaf",
+    "Potato leaf early blight",
+    "Potato leaf late blight",
+    "Raspberry leaf",
+    "Soyabean leaf",
+    "Squash Powdery mildew leaf",
+    "Strawberry leaf",
+    "Tomato Early blight leaf",
+    "Tomato Septoria leaf spot",
+    "Tomato leaf",
+    "Tomato leaf bacterial spot",
+    "Tomato leaf late blight",
+    "Tomato leaf mosaic virus",
+    "Tomato leaf yellow virus",
+    "Tomato mold leaf",
+    "grape leaf",
+    "grape leaf black rot"
+  ],
+  "input_size": 224,
+  "resize_canh_ngan": 256,
+  "center_crop": 224,
+  "mean": [
+    0.4668,
+    0.5101,
+    0.378
+  ],
+  "std": [
+    0.2588,
+    0.2464,
+    0.2612
+  ],
+  "nguong_lam_sang": 60,
+  "cach_lam_sang": "Khu nhieu + Gamma + CLAHE",
+  "lam_sang": {
+    "bilateral": [
+      7,
+      40,
+      7
+    ],
+    "gamma_muc_tieu": 0.35,
+    "gamma_min": 0.3,
+    "clahe_clip": 2.0,
+    "clahe_o": 8
+  },
+  "nhom_lop": {
+    "thanh_long": [
+      "Dragon fruit healthy",
+      "Dragon fruit red fungus",
+      "Dragon fruit yellow spot",
+      "Dragon fruit coin spot",
+      "Dragon fruit streak spot",
+      "Dragon fruit stem rot"
+    ],
+    "plantdoc": [
+      "Apple Scab Leaf",
+      "Apple leaf",
+      "Apple rust leaf",
+      "Bell_pepper leaf",
+      "Bell_pepper leaf spot",
+      "Blueberry leaf",
+      "Cherry leaf",
+      "Corn Gray leaf spot",
+      "Corn leaf blight",
+      "Corn rust leaf",
+      "Peach leaf",
+      "Potato leaf early blight",
+      "Potato leaf late blight",
+      "Raspberry leaf",
+      "Soyabean leaf",
+      "Squash Powdery mildew leaf",
+      "Strawberry leaf",
+      "Tomato Early blight leaf",
+      "Tomato Septoria leaf spot",
+      "Tomato leaf",
+      "Tomato leaf bacterial spot",
+      "Tomato leaf late blight",
+      "Tomato leaf mosaic virus",
+      "Tomato leaf yellow virus",
+      "Tomato mold leaf",
+      "grape leaf",
+      "grape leaf black rot"
+    ]
+  },
+  "video": {
+    "moi_giay": 2,
+    "toi_da_khung": 60
+  },
+  "ghi_chu": "anh RGB -> resize canh ngan 256 -> neu do sang trung binh (0-255) < nguong thi lam sang theo cach_lam_sang -> cat giua 224 -> chia 255 -> chuan hoa mean/std -> softmax"
+}

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chẩn Đoán Bệnh Cây Trồng & Thanh Long - KPDL Nhóm 6</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- HEADER ĐƠN GIẢN, GỌN GÀNG -->
+    <header class="minimal-header">
+      <div class="header-tags">
+        <span class="badge-tag badge-uni">ĐH THỦY LỢI CS2</span>
+        <span class="badge-tag badge-course">KHAI PHÁ DỮ LIỆU</span>
+        <span class="badge-tag badge-team">NHÓM 6 (K65 CNTT)</span>
+      </div>
+      <h1 class="minimal-title">HỆ THỐNG CHẨN ĐOÁN BỆNH CÂY TRỒNG & THANH LONG</h1>
+      <p class="minimal-subtitle">
+        Tải lên ảnh hoặc video cành cây bất kỳ để mô hình AI nhận diện loại cây và chẩn đoán bệnh
+      </p>
+    </header>
+
+    <!-- KHUNG TẢI TỆP DUY NHẤT Ở TRUNG TÂM -->
+    <main class="single-center-layout">
+      <div class="upload-container-card">
+        <div class="dropzone" id="dropzone">
+          <input type="file" id="mediaInput" accept="image/*,video/*" class="file-input">
+          
+          <!-- LÚC CHƯA CÓ FILE -->
+          <div class="dropzone-content" id="dropzonePrompt">
+            <div class="upload-circle">
+              <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="17 8 12 3 7 8"/>
+                <line x1="12" y1="3" x2="12" y2="15"/>
+              </svg>
+            </div>
+            <h2 class="upload-headline">Bấm vào đây để chọn Ảnh hoặc Video</h2>
+            <p class="upload-subtext">Hoặc kéo và thả tệp bất kỳ từ máy tính của bạn vào khung này</p>
+            <div class="supported-formats">
+              <span>Hỗ trợ: JPG, PNG, WEBP, MP4, MOV, WEBM, AVI</span>
+            </div>
+          </div>
+
+          <!-- KHI ĐÃ CHỌN FILE (HIỂN THỊ XEM TRƯỚC) -->
+          <div class="preview-wrapper" id="previewWrapper" style="display: none;">
+            <img id="previewImg" class="preview-element" alt="Xem trước ảnh" style="display: none;">
+            <video id="previewVideo" class="preview-element" controls style="display: none;"></video>
+            
+            <div class="file-badge-bar">
+              <span id="previewFileName" class="badge-filename">media.jpg</span>
+              <span id="previewFileType" class="badge-filetype">Ảnh</span>
+              <button type="button" id="btnRemoveFile" class="btn-change-file" title="Chọn tệp khác">✕ Đổi tệp khác</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- NÚT BẮT ĐẦU CHẨN ĐOÁN -->
+        <div class="action-box">
+          <button type="button" id="btnDiagnose" class="btn-diagnose" disabled>
+            <span class="btn-icon">🔬</span>
+            <span class="btn-text">BẮT ĐẦU CHẨN ĐOÁN</span>
+          </button>
+        </div>
+      </div>
+    </main>
+
+    <!-- MODAL POPUP HIỂN THỊ KẾT QUẢ TOÀN DIỆN KHI BẤM NÚT -->
+    <div id="resultModal" class="modal-overlay" style="display: none;">
+      <div class="modal-container">
+        <!-- MODAL HEADER -->
+        <div class="modal-header">
+          <div class="modal-title-box">
+            <div class="modal-tag-row">
+              <span id="modalPlantType" class="badge-plant">CÂY THANH LONG</span>
+              <span id="modalStatusBadge" class="badge-status">BỆNH NGUY HIỂM</span>
+              <span id="modalNightBadge" class="badge-night" style="display: none;">🌙 BẬT CLAHE+GAMMA</span>
+            </div>
+            <h2 id="modalDiseaseTitle" class="modal-disease-name">Cây Thanh Long: Bệnh Nấm Đồng Tiền</h2>
+            <p id="modalDiseaseEn" class="modal-disease-en">Dragon fruit coin spot</p>
+          </div>
+          <button type="button" class="btn-close-modal" id="btnCloseModal" title="Đóng cửa sổ">&times;</button>
+        </div>
+
+        <!-- MODAL BODY -->
+        <div class="modal-body">
+          <!-- CỘT TRÁI: HÌNH ẢNH & ĐỘ TIN CẬY -->
+          <div class="modal-col-left">
+            <div class="modal-img-card">
+              <div class="img-header-bar">
+                <span id="modalMediaTag" class="media-type-tag">Ảnh Thực Địa</span>
+                <span id="modalInferenceTime" class="latency-tag">⚡ 48 ms</span>
+              </div>
+              <img id="modalPreviewImg" src="" alt="Khung hình chẩn đoán" class="modal-analyzed-img">
+              <div id="modalBestFrameBar" class="best-frame-bar" style="display: none;">
+                🎯 Khung hình rõ nhất tại: <strong id="modalBestTimestamp">00:02</strong>
+              </div>
+            </div>
+
+            <!-- ĐỘ TIN CẬY -->
+            <div class="confidence-card">
+              <span class="conf-label">ĐỘ TIN CẬY CỦA MÔ HÌNH</span>
+              <div class="conf-value-row">
+                <span id="modalConfidencePercent" class="conf-percent">98.4%</span>
+                <span id="modalConfidenceDesc" class="conf-desc">Cực kỳ chắc chắn</span>
+              </div>
+              <div class="conf-bar-bg">
+                <div id="modalConfidenceBar" class="conf-bar-fill" style="width: 98.4%;"></div>
+              </div>
+            </div>
+
+            <!-- PHÂN TÍCH VIDEO NẾU CÓ -->
+            <div id="modalVideoSummaryBox" class="video-summary-box" style="display: none;">
+              <span class="v-box-title">🎥 Kết Quả Quét Video:</span>
+              <p>Đã phân tích <strong><span id="modalVideoFrames">12</span> khung hình</strong> trong <span id="modalVideoDuration">3.0</span>s.</p>
+              <p>Tỷ lệ đồng thuận giữa các frame: <strong id="modalVideoConsensus" class="text-green">91.7%</strong></p>
+            </div>
+          </div>
+
+          <!-- CỘT PHẢI: KHOA HỌC & ĐIỀU TRỊ -->
+          <div class="modal-col-right">
+            <!-- TOP 3 PHÂN PHỐI XÁC SUẤT -->
+            <div class="modal-section-card">
+              <h4 class="sec-title">📊 Top-3 Xác Suất Nhận Diện:</h4>
+              <div id="modalTop3List" class="top3-list"></div>
+            </div>
+
+            <!-- TRIỆU CHỨNG NHẬN BIẾT -->
+            <div class="modal-section-card">
+              <h4 class="sec-title">🔍 Triệu Chứng Nhận Biết Ngoài Vườn:</h4>
+              <ul id="modalSymptomsList" class="symptoms-list"></ul>
+            </div>
+
+            <!-- BIỆN PHÁP ĐIỀU TRỊ & THUỐC -->
+            <div class="modal-section-card treatment-card">
+              <h4 class="sec-title">💊 Khuyến Nghị Canh Tác & Thuốc Đặc Trị:</h4>
+              <p id="modalTreatmentCanhTac" class="treatment-text"></p>
+              
+              <div id="modalDrugsContainer" class="drugs-container">
+                <div class="table-responsive">
+                  <table class="drugs-table">
+                    <thead>
+                      <tr>
+                        <th>Tên Thuốc Thương Phẩm</th>
+                        <th>Hoạt Chất Đặc Trị</th>
+                        <th>Liều Lượng Khuyến Cáo</th>
+                      </tr>
+                    </thead>
+                    <tbody id="modalDrugsTableBody"></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <!-- TIMELINE FRAME VIDEO (NẾU LÀ VIDEO) -->
+            <div id="modalVideoTimelineBox" class="modal-section-card" style="display: none;">
+              <h4 class="sec-title">⏱️ Diễn Biến Từng Khung Hình Video:</h4>
+              <div class="timeline-table-wrapper">
+                <table class="timeline-table">
+                  <thead>
+                    <tr>
+                      <th>Thời Điểm</th>
+                      <th>Khung Số</th>
+                      <th>Bệnh Dự Đoán</th>
+                      <th>Độ Tin Cậy</th>
+                    </tr>
+                  </thead>
+                  <tbody id="modalTimelineBody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MODAL FOOTER -->
+        <div class="modal-footer">
+          <div class="footer-model-badge">
+            ⚙️ <strong>Mô Hình:</strong> ResNet18 Transfer Learning • KPDL Nhóm 6
+          </div>
+          <div class="footer-actions">
+            <button type="button" class="btn-modal-close" onclick="closeModal()">Đóng Cửa Sổ</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SPINNER OVERLAY -->
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+      <div class="spinner-box">
+        <div class="spinner-ring"></div>
+        <h3 class="loading-title">Đang Phân Tích Hình Ảnh / Video...</h3>
+        <p class="loading-desc">Mô hình AI đang kiểm tra loại cây và chẩn đoán bệnh...</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
